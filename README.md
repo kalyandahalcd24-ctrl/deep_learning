@@ -1,92 +1,88 @@
-# XOR Neural Network Implementation
+# LSTM Time Series Prediction
 
-This notebook demonstrates how to solve the **XOR (exclusive OR) problem** using a multilayer perceptron (MLP) in two ways:
+## 1. Project Description
+This project uses a Long Short-Term Memory (LSTM) neural network to predict the next value in a time series dataset.
 
-1. **From scratch using NumPy**
-2. **Using Keras with TensorFlow**
+The dataset is generated using a sine wave, a linear trend, and random noise. The LSTM model learns patterns from previous observations and predicts future values.
 
-## Dataset
-
-The notebook uses four binary input combinations and their XOR outputs:
-
-| Input 1 | Input 2 | XOR Output |
-|---:|---:|---:|
-| 0 | 0 | 0 |
-| 0 | 1 | 1 |
-| 1 | 0 | 1 |
-| 1 | 1 | 0 |
-
-XOR returns `1` when the two inputs differ and `0` when they are the same.
-
-## Implementations
-
-### 1. NumPy implementation
-
-The first code cell builds and trains a small MLP without a deep-learning framework.
-
-- **Architecture:** 2 input neurons, 2 hidden neurons, and 1 output neuron
-- **Activation:** Sigmoid in the hidden and output layers
-- **Learning rate:** `0.1`
-- **Training epochs:** `10,000`
-- **Training method:** Forward propagation, error calculation, backpropagation, and weight/bias updates
-- **Output:** Prints the predicted outputs for the four XOR inputs
-
-Weights and biases are initialized randomly, so the exact predictions can vary between runs.
-
-### 2. Keras / TensorFlow implementation
-
-The second code cell builds the model using TensorFlow's Keras API.
-
-- **Architecture:** 2 input features, a hidden Dense layer with 8 neurons, and a 1-neuron output layer
-- **Hidden activation:** ReLU
-- **Output activation:** Sigmoid
-- **Loss function:** Binary cross-entropy
-- **Optimizer:** Stochastic Gradient Descent (SGD)
-- **Learning rate:** `0.1`
-- **Training epochs:** `1,000`
-- **Evaluation:** Prints model accuracy
-- **Prediction:** Prints predictions rounded to `0` or `1`
-
-Because training starts from random initial weights, accuracy and predictions may vary between runs.
-
-## Requirements
-
-- Python 3
+## 2. Technologies Used
+- Python
 - NumPy
-- TensorFlow
+- Matplotlib
+- TensorFlow / Keras
 
-## Installation
+## 3. Dataset
+- Total data points: 1000
+- Training split: 80%
+- Testing split: 20%
+- Window size: 30
+- Random seed: 42
 
-Install the required packages with:
+## 4. Implementation Steps
 
-```bash
-pip install numpy tensorflow
-```
+### Task 1: Data Scaling
+The minimum and maximum values are calculated using only the training portion of the series. These statistics are then used to scale the series.
 
-## How to Run
+### Task 2: Sliding Windows
+A sliding window of 30 values is created. Each window is used to predict the value immediately after it.
 
-1. Open `lab1.ipynb` in Jupyter Notebook, JupyterLab, or Google Colab.
-2. Make sure the required packages are installed.
-3. Run the notebook cells in order.
-4. Review the predicted XOR outputs from the NumPy implementation and the accuracy and rounded predictions from the Keras implementation.
+### Task 3: Reshaping and Splitting
+The input data is reshaped to three dimensions:
 
-## Expected Result
+`(samples, time_steps, features)`
 
-Both implementations are intended to learn the XOR mapping:
+The data is split in chronological order, with earlier windows used for training and later windows used for testing.
+
+### Task 4: LSTM Model
+The model contains:
+- An LSTM layer with 50 units
+- A Dense output layer with 1 neuron
+
+### Task 5: Training and Evaluation
+The model is trained using:
+- Optimizer: Adam
+- Loss function: MSE
+- Metric: MAE
+- Epochs: 20
+- Batch size: 32
+
+The final predictions are evaluated using RMSE (Root Mean Squared Error).
+
+## 5. Expected Output
+When the program runs, it displays:
+- Training progress for 20 epochs
+- Training loss and MAE
+- Validation loss and validation MAE
+- The final Test RMSE value
+
+Example format:
 
 ```text
-Input [0, 0] -> 0
-Input [0, 1] -> 1
-Input [1, 0] -> 1
-Input [1, 1] -> 0
+Epoch 1/20
+...
+Epoch 20/20
+...
+Test RMSE: <calculated value>
 ```
 
-The exact printed values may differ because the models use randomly initialized parameters. The NumPy version prints sigmoid probabilities; the Keras version also prints predictions rounded to binary values.
+The exact RMSE value may vary depending on the TensorFlow version and execution environment.
 
-## Learning Objectives
+## 6. How to Run the Project
 
-- Understand the XOR problem and why a hidden layer is useful for learning it.
-- Learn the basics of a multilayer perceptron.
-- Understand forward propagation and backpropagation.
-- Compare a manually implemented neural network with a Keras/TensorFlow model.
-- Train, evaluate, and test a simple binary-output neural network.
+### Step 1: Install the required libraries
+
+```bash
+pip install numpy matplotlib tensorflow
+```
+
+### Step 2: Save the Python program
+Save the completed code in a file named `main.py`.
+
+### Step 3: Run the program
+
+```bash
+python main.py
+```
+
+## 7. Conclusion
+This project demonstrates how an LSTM neural network can learn sequential patterns from time-series data and predict future values using sliding windows. It also demonstrates data scaling, chronological train-test splitting, model training, and evaluation using RMSE.
